@@ -46,16 +46,28 @@ export class GalleryController {
 
     try {
       // ১. File ID থেকে File Path বের করা
-      const fileRes = await axios.get(`https://api.telegram.org/bot${this.botToken}/getFile?file_id=${fileId}`);
+      const fileRes = await axios.get(
+        `https://api.telegram.org/bot${this.botToken}/getFile?file_id=${fileId}`,
+        { timeout: 10000 }
+      );
       const filePath = fileRes.data.result.file_path;
 
       // ২. File Path থেকে মূল ছবি ডাউনলোড করা
-      const imageRes = await axios.get(`https://api.telegram.org/file/bot${this.botToken}/${filePath}`, {
-        responseType: 'stream',
+      const imageRes = await axios.get(
+        `https://api.telegram.org/file/bot${this.botToken}/${filePath}`,
+        { responseType: 'stream', timeout: 15000 }
+      );
+
+      // ৩. Content-Type নির্ধারণ করা (jpg/png/webp যেটাই হোক)
+      const contentType = imageRes.headers['content-type'] || 'image/jpeg';
+
+      // ৪. Cache headers + CORS সহ ছবি পাঠানো
+      res.set({
+        'Content-Type': contentType,
+        'Cache-Control': 'public, max-age=86400', // ১ দিন ক্যাশ
+        'Access-Control-Allow-Origin': '*',
       });
 
-      // ৩. ছবি ফ্রন্টএন্ডে স্ট্রিম করা (Proxy)
-      res.set('Content-Type', 'image/jpeg');
       imageRes.data.pipe(res);
     } catch (error) {
       console.error("Fetch Image Error:", error);
