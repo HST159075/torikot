@@ -4,13 +4,21 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // CORS Configuration: Allow only specific origins in production
-  const allowedOrigins = process.env.FRONTEND_URL 
-    ? [process.env.FRONTEND_URL, 'http://localhost:3000'] 
-    : '*';
-
+  // CORS: vercel.app ডোমেইন এবং localhost সব allow করা
   app.enableCors({ 
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      // No origin (mobile apps, curl, etc.) বা vercel.app বা localhost allow
+      if (
+        !origin || 
+        origin.includes('.vercel.app') || 
+        origin.includes('localhost') ||
+        origin === process.env.FRONTEND_URL
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
   });
   
