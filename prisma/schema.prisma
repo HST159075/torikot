@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Worker {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  branch    String   @default("")
+  porishod  String
+  subUnit   String
+  role      String   @default("member")
+  image     String?  // Telegram file_id
+  createdAt DateTime @default(now())
+}
+
+model Committee {
+  id          Int    @id @default(autoincrement())
+  parent      String
+  branchName  String
+  leafName    String
+  workerCount Int    @default(0)
+}
+
+model Event {
+  id     Int    @id @default(autoincrement())
+  name   String
+  date   String
+  duties String?
+}
