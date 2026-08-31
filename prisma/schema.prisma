@@ -15,6 +15,7 @@ model Worker {
   porishod  String
   subUnit   String
   role      String   @default("member")
+  joinStatus String  @default("new")
   image     String?  // Telegram file_id
   createdAt DateTime @default(now())
 }
