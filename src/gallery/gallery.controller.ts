@@ -40,6 +40,26 @@ export class GalleryController {
     }
   }
 
+  // ফাইলের extension থেকে সঠিক content-type বের করা
+  // কারণ Telegram Bot API সবসময় 'application/octet-stream' রিটার্ন করে,
+  // real content-type header দেয় না — এই কারণে <img src="data:..."> রেন্ডার হয় না
+  private getContentTypeFromPath(filePath: string): string {
+    const ext = filePath.split('.').pop()?.toLowerCase();
+    switch (ext) {
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg';
+      case 'png':
+        return 'image/png';
+      case 'webp':
+        return 'image/webp';
+      case 'gif':
+        return 'image/gif';
+      default:
+        return 'image/jpeg'; // fallback, Telegram photo prায় সবসময় jpg
+    }
+  }
+
   @Get('image/:file_id')
   async getImage(@Param('file_id') fileId: string, @Res() res: Response) {
     if (!this.botToken) return res.status(500).send("Config missing");
@@ -58,8 +78,9 @@ export class GalleryController {
         { responseType: 'stream', timeout: 15000 }
       );
 
-      // ৩. Content-Type নির্ধারণ করা (jpg/png/webp যেটাই হোক)
-      const contentType = imageRes.headers['content-type'] || 'image/jpeg';
+      // ৩. Content-Type নির্ধারণ করা — Telegram হেডার ট্রাস্ট না করে
+      // file_path-এর extension থেকে সঠিক image mime type বের করা হচ্ছে
+      const contentType = this.getContentTypeFromPath(filePath);
 
       // ৪. Cache headers + CORS সহ ছবি পাঠানো
       res.set({
