@@ -34,3 +34,11 @@ model Event {
   date   String
   duties String?
 }
+
+model User {
+  id           Int      @id @default(autoincrement())
+  branch       String   @unique  // e.g. "05NO"
+  passwordHash String
+  role         String   @default("member")  // "admin" | "member"
+  createdAt    DateTime @default(now())
+}
