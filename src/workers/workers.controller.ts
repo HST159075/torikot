@@ -18,9 +18,12 @@ export class WorkersController {
     if (!data.phone || !phoneRegex.test(data.phone)) {
       throw new BadRequestException('Valid 11-digit Bangladeshi phone number is required.');
     }
+    if (!data.branch || data.branch.trim() === '') {
+      throw new BadRequestException('Branch is required.');
+    }
+    data.branch = data.branch.trim();
     data.porishod = data.porishod ? data.porishod.trim() : '';
     data.subUnit = data.subUnit ? data.subUnit.trim() : '';
-    data.branch = data.branch ? data.branch.trim() : '';
     data.branchRole = data.branchRole ? data.branchRole.trim() : '';
   }
 
