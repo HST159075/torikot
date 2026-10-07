@@ -12,8 +12,8 @@ model Worker {
   name      String
   phone     String
   branch    String   @default("")
-  porishod  String
-  subUnit   String
+  porishod  String   @default("")
+  subUnit   String   @default("")
   role      String   @default("member")
   branchRole String  @default("")
   joinStatus String  @default("new")
