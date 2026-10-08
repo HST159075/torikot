@@ -43,3 +43,16 @@ model User {
   role         String   @default("member")  // "admin" | "member"
   createdAt    DateTime @default(now())
 }
+
+model SpecialDuty {
+  id             Int      @id @default(autoincrement())
+  branch         String
+  day            String   // e.g. "বুধবার"
+  startTime      String   // e.g. "রাত ৮:০০"
+  endTime        String   // e.g. "সকাল ৮:০০"
+  startDate      String?  // e.g. "2025-07-23"
+  description    String?
+  presentWorkers Json     @default("[]")  // number[]
+  groups         Json     @default("[]")  // DutyGroup[]
+  createdAt      DateTime @default(now())
+}

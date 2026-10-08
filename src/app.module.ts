@@ -6,11 +6,13 @@ import { WorkersModule } from './workers/workers.module';
 import { CommitteesModule } from './committees/committees.module';
 import { GalleryModule } from './gallery/gallery.module';
 import { AuthModule } from './auth/auth.module';
+import { SpecialDutyModule } from './special-duty/special-duty.module';
 
 @Module({
-  imports: [PrismaModule, WorkersModule, CommitteesModule, GalleryModule, AuthModule],
+  imports: [PrismaModule, WorkersModule, CommitteesModule, GalleryModule, AuthModule, SpecialDutyModule],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}
+
 
